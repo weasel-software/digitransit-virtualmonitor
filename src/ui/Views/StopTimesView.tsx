@@ -1,5 +1,5 @@
 import * as React from "react";
-import { InjectedTranslateProps, translate } from "react-i18next";
+import { InjectedTranslateProps, translate, I18n } from "react-i18next";
 
 import { IStop as LocalIStop } from 'src/ui/ConfigurationList'
 import Logo from 'src/ui/Logo';
@@ -9,10 +9,12 @@ import { default as StopTimesRetriever, IStop, IStopTime, StopId, StopTimesRetri
 import Titlebar from "src/ui/Titlebar";
 import TitlebarTime from 'src/ui/TitlebarTime';
 import 'src/ui/Views/StopTimesView.css';
+import i18n from 'src/i18n';
 
 const duplicateRouteTimeThresholdSeconds = 15 * 60;
 
 interface IStopTimesViewCommonProps {
+  readonly lang?: string,
   readonly title?: string,
   readonly displayedRoutes?: number,
   readonly pierColumnTitle?: string,
@@ -113,6 +115,10 @@ const StopTimesView: React.SFC<ICombinedStopTimesViewProps> = (props: ICombinedS
     || [];
   const showStopColumn = stopIds.length === 1
   const monitorConfig = (props as IStopTimesViewCommonProps).monitorConfig;
+  const lang = (props as IStopTimesViewCommonProps).lang;
+  if(lang) {
+    i18n.changeLanguage(lang);
+  }
 
   return (
     <div style={{ color: 'white', display: 'flex', flexDirection:'column' }}>

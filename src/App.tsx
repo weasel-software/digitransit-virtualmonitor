@@ -15,6 +15,7 @@ import QuickDisplay from 'src/ui/QuickDisplay';
 import TitlebarTime from 'src/ui/TitlebarTime';
 import StopTimesView from 'src/ui/Views/StopTimesView';
 import HelpPage from 'src/ui/HelpPage';
+import i18n from 'src/i18n';
 
 interface IMonitorConfig {
   feedId?:  string,
@@ -40,6 +41,7 @@ interface IConfigurationDisplayRouteParams {
 };
 
 interface IStopRouteParams {
+  lang: string,
   stopId: string,
   displayedRoutes?: string,
 };
@@ -104,9 +106,10 @@ class App extends React.Component<combinedConfigurationAndInjected> {
             )}
           />
           <Route
-            path={'/stop/:stopId/:displayedRoutes?'}
-            component={({ match: { params: { stopId, displayedRoutes }} }: RouteComponentProps<IStopRouteParams>) => (
+            path={'/:lang?/stop/:stopId/:displayedRoutes?'}
+            component={({ match: { params: { lang, stopId, displayedRoutes }} }: RouteComponentProps<IStopRouteParams>) => (
               <StopTimesView
+                lang={lang}
                 stopIds={stopId.split(",")}
                 displayedRoutes={displayedRoutes ? Number(displayedRoutes) : undefined}
                 monitorConfig={monitorConfig}
