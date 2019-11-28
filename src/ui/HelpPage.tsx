@@ -42,6 +42,7 @@ const HelpPageContent = ({exampleStopId, exampleStopName, exampleStopIds, exampl
 const HelpPageTranslated = translate('translations')(HelpPageContent);
 class HelpPage extends React.Component<IHelpPageProps> {
 public render() {
+  // Todo: Information about changing language with url parameters!
   if(!this.props) {
     return (<p> {i18n.t('helpPageError')}</p>)
   }
