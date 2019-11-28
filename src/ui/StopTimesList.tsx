@@ -36,7 +36,7 @@ const StopTimesListHeaders = ({ pierColumnTitle, showPier, t, showStopColumn }: 
         : null
       }
      {!showStopColumn 
-       ? <th className={'destination'}> Pysäkki </th> 
+       ? <th className={'destination'}> {t('stop')} </th> 
        : null}
       <th className={'departureTime'}>{t('departureTime')}</th>
     </tr>

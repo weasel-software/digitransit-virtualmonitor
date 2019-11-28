@@ -21,10 +21,12 @@ interface IMonitorConfig {
   feedId?:  string,
   uri?: string,
       // Texts for Help page
-  urlParamUsageText?: string,
-  urlMultipleStopsText?: string,
-  urlParamFindText?: string,
-  urlParamFindAltText?: string,
+  exampleStopId?: string,
+  exampleStopIds?: string,
+  exampleReittiopasUrl?: string,
+  exampleReittiopasStopId?: string,
+  exampleStopName?: string,
+  lang?: string
 }
 
 export interface IConfigurationProps{
@@ -57,15 +59,19 @@ class App extends React.Component<combinedConfigurationAndInjected> {
 
     let helpPageUrlParamText: string = '';
     let helpPageurlMultipleStopsText: string = '';
-    let helpPageUrlParamFindText: string = '';
-    let helpPageUrlParamFindAltText: string = '';
+    let exampleReittiopasUrl: string = '';
+    let exampleReittiopasStopId: string = '';
+    let examplePageStopName: string = '';
+    let feedId: string = '';
 
     if(monitorConfig) {
-     // set texts for help page.
-      helpPageUrlParamText = monitorConfig.urlParamUsageText ? monitorConfig.urlParamUsageText : '';
-      helpPageurlMultipleStopsText = monitorConfig.urlMultipleStopsText ? monitorConfig.urlMultipleStopsText : '';
-      helpPageUrlParamFindText = monitorConfig.urlParamFindText ? monitorConfig.urlParamFindText : '';
-      helpPageUrlParamFindAltText = monitorConfig.urlParamFindAltText ? monitorConfig.urlParamFindAltText : '';
+     // Configurable strings for help page..
+      helpPageUrlParamText = monitorConfig.exampleStopId ? monitorConfig.exampleStopId : '';
+      helpPageurlMultipleStopsText = monitorConfig.exampleStopIds ? monitorConfig.exampleStopIds : '';
+      exampleReittiopasUrl = monitorConfig.exampleReittiopasUrl ? monitorConfig.exampleReittiopasUrl : '';
+      exampleReittiopasStopId = monitorConfig.exampleReittiopasStopId ? monitorConfig.exampleReittiopasStopId : '';
+      examplePageStopName = monitorConfig.exampleStopName ? monitorConfig.exampleStopName : '';
+      feedId = monitorConfig.feedId ? monitorConfig.feedId : ''
     }
     
     return (
@@ -78,12 +84,15 @@ class App extends React.Component<combinedConfigurationAndInjected> {
             component={QuickDisplay}
           />
           <Route
-           path={'/help/'}
-           component={({ match: { params: { }} }: RouteComponentProps<IMonitorConfig>) => (
-            <HelpPage urlParamUsageText={helpPageUrlParamText}
-                      urlMultipleStopsText={helpPageurlMultipleStopsText}
-                      urlParamFindText={helpPageUrlParamFindText}
-                      urlParamFindAltText={helpPageUrlParamFindAltText}
+           path={'/:lang?/help/'}
+           component={({ match: { params: { lang }} }: RouteComponentProps<IMonitorConfig>) => (
+            <HelpPage exampleStopId={helpPageUrlParamText}
+                      exampleStopIds={helpPageurlMultipleStopsText}
+                      exampleReittiopasUrl={exampleReittiopasUrl}
+                      exampleReittiopasStopId={exampleReittiopasStopId}
+                      exampleStopName={examplePageStopName}
+                      lang={lang}
+                      feedId={feedId}
              />
             )}         
           />
