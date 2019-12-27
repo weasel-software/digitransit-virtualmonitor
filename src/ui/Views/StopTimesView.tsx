@@ -139,6 +139,7 @@ const StopTimesView: React.SFC<ICombinedStopTimesViewProps> = (props: ICombinedS
                 </div>);
               }
               if (!result.data.stops || (result.data.stops.length <= 0)) {
+                console.log("HALLOOO!!", result)
                 return (<div>
                   {props.t('stopRetrieveNotFound', { stopIds })}
                 </div>);

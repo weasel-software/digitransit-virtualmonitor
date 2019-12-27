@@ -45,6 +45,7 @@ const StopTimesListHeaders = ({ pierColumnTitle, showPier, t, showStopColumn }: 
 const StopTimesListHeadersTranslated = translate('translations')(StopTimesListHeaders);
 
 const StopTimeRow = ({ stoptime, showPier, t, showStopColumn } : { stoptime: IStopTime & IOverrideStopName, showPier?: boolean, showStopColumn?: boolean, } & InjectedTranslateProps) => {
+  console.log(stoptime, "HEELLOOOO")
   const isCanceled = stoptime.realtimeState === 'CANCELED';
 
   // If the Vehicle is arriving to its' destination, its headsign is null, or headsign is stop's name.

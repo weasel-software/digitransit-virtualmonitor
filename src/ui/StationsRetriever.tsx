@@ -6,10 +6,50 @@ import { InjectedTranslateProps, translate } from "react-i18next";
 import StationsList from "src/ui/StationList";
 
 const STATIONS_QUERY = gql`
-	query {
-		stations {
-			name
+	query GetStations($stopIds: [String], $numberOfDepartures: Int!) {
+		{
+			stations(ids: $stopIds) {
+				name
+				gtfsId
+				id
+				stops {
+					id
+					name
+					gtfsId
+					stoptimesWithoutPatterns(numberOfDepartures: $numberOfDepartures) {
+						stop {
+							id
+							gtfsId
+							platformCode
+						}
+						scheduledArrival
+						realtimeArrival
+						arrivalDelay
+						scheduledDeparture
+						realtimeDeparture
+						departureDelay
+						timepoint
+						realtime
+						realtimeState
+						pickupType
+						dropoffType
+						serviceDay
+						stopHeadsign
+						headsign
+						trip {
+							gtfsId
+							stops {
+								id
+							}
+							route {
+								shortName
+							}
+						}
+					}
+				}
+			}
 		}
+		
 	}
 `;
 
