@@ -13,8 +13,7 @@ const usedStopTimeField = 'realtimeDeparture';
 
 const STOP_TIMES_QUERY = gql`
 query GetStops($stopIds: [String], $numberOfDepartures: Int!) {
-  stations(ids: $stopIds) {
-  stops {
+  stops(ids: $stopIds)  {
     name,
     gtfsId,
     stoptimesWithoutPatterns(numberOfDepartures: $numberOfDepartures) {
@@ -49,7 +48,7 @@ query GetStops($stopIds: [String], $numberOfDepartures: Int!) {
       },
     },
   }
-}
+
 }
 `;
 export interface ITripStops {
