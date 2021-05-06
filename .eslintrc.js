@@ -29,6 +29,7 @@ module.exports = {
         "sourceType": "module",
     },
     "plugins": [
+        "eslint-plugin-prettier",
         "eslint-plugin-react",
         "eslint-plugin-jsdoc",
         "eslint-plugin-prefer-arrow",
@@ -169,7 +170,6 @@ module.exports = {
             "warn",
             1
         ],
-        "max-len": "off",
         "new-parens": "off",
         "newline-per-chained-call": "off",
         "no-bitwise": "warn",
@@ -240,6 +240,16 @@ module.exports = {
                     "object-literal-sort-keys": true
                 }
             }
-        ]
+        ],
+        // prettier
+        'prettier/prettier': [
+            'error',
+            {
+                arrowParens: 'avoid',
+                endOfLine: 'auto',
+                singleQuote: true,
+                trailingComma: 'all',
+            },
+        ],
     }
 };

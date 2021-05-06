@@ -33,5 +33,5 @@ export const ApolloClientsContext = ApolloClientsContextCreator({
   // virtualMonitor: virtualMonitorClient,
 });
 
-export const Consumer = ApolloClientsContext.Consumer;
-export const Provider = ApolloClientsContext.Provider;
+export const { Consumer } = ApolloClientsContext;
+export const { Provider } = ApolloClientsContext;

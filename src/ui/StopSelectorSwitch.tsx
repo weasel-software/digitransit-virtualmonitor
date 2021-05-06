@@ -5,7 +5,7 @@ import StopSelector from 'src/ui/StopSelector';
 
 const StopSelectorSwitch = () => (
   <Switch>
-    <Route path={'/searchStop/:phrase?'} component={StopSelector} />
+    <Route path="/searchStop/:phrase?" component={StopSelector} />
     <Route component={StopSelector} />
   </Switch>
 );

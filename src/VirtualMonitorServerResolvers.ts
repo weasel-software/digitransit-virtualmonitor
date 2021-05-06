@@ -8,16 +8,22 @@ const resolvers = {
     //   cache.writeData();
     //   return null;
     // },
-    createDisplay: (_: any, { configurationName, name }: { configurationName: string, name: string }, { cache, getCacheKey }: { cache: ApolloCache<any>, getCacheKey: any }) => {
-      return null;
-    },
-    createLocalConfiguration: (_: any, { name }: { name: string }, { cache, getCacheKey }: { cache: ApolloCache<any>, getCacheKey: any }) => {
-      return null;
-    },
-    modifyLocalConfigurations: (_: any, { configuration }: { configuration: IConfiguration }, { cache, getCacheKey }: { cache: ApolloCache<any>, getCacheKey: any }) => {
-      return null;
-    },
-  }
+    createDisplay: (
+      _: any,
+      { configurationName, name }: { configurationName: string; name: string },
+      { cache, getCacheKey }: { cache: ApolloCache<any>; getCacheKey: any },
+    ) => null,
+    createLocalConfiguration: (
+      _: any,
+      { name }: { name: string },
+      { cache, getCacheKey }: { cache: ApolloCache<any>; getCacheKey: any },
+    ) => null,
+    modifyLocalConfigurations: (
+      _: any,
+      { configuration }: { configuration: IConfiguration },
+      { cache, getCacheKey }: { cache: ApolloCache<any>; getCacheKey: any },
+    ) => null,
+  },
 };
 
 export default resolvers;

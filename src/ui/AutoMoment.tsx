@@ -1,17 +1,17 @@
 import * as moment from 'moment';
-import * as React from "react";
+import * as React from 'react';
 import ReactMoment from 'react-moment';
 
 import NtpSyncContext from 'src/ntp/NtpSyncContext';
-import { EpochMilliseconds, Milliseconds } from "src/time";
+import { EpochMilliseconds, Milliseconds } from 'src/time';
 
 export interface ITimeProps {
-  readonly currentTime?: EpochMilliseconds,
-  readonly updateInterval?: Milliseconds,
-};
+  readonly currentTime?: EpochMilliseconds;
+  readonly updateInterval?: Milliseconds;
+}
 
 class AutoMoment extends React.Component<ITimeProps, any> {
-  constructor (props: ITimeProps) {
+  constructor(props: ITimeProps) {
     super(props);
   }
 
@@ -28,6 +28,6 @@ class AutoMoment extends React.Component<ITimeProps, any> {
       />
     );
   }
-};
+}
 
 export default AutoMoment;

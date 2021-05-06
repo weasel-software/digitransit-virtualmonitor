@@ -1,8 +1,8 @@
-import * as React from "react";
+import * as React from 'react';
 
 export interface INtpSyncContext {
-  deltaMilliseconds: number,
-};
+  deltaMilliseconds: number;
+}
 
 export default React.createContext({
   deltaMilliseconds: 0,

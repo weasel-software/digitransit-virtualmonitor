@@ -18,96 +18,116 @@ import StopTimesView from 'src/ui/Views/StopTimesView';
 import 'src/App.css';
 
 export interface IMonitorConfig {
-  feedId?:  string,
-  uri?: string,
-      // Texts for Help page
-  urlParamUsageText?: string,
-  urlMultipleStopsText?: string,
-  urlParamFindText?: string,
-  urlParamFindAltText?: string,
-};
+  feedId?: string;
+  uri?: string;
+  // Texts for Help page
+  urlParamUsageText?: string;
+  urlMultipleStopsText?: string;
+  urlParamFindText?: string;
+  urlParamFindAltText?: string;
+}
 
 export interface IQueryString {
-  title?: string,
+  title?: string;
 }
 
 export interface IConfigurationProps {
-  monitorConfig?: IMonitorConfig,
-  search?: IQueryString,
-};
+  monitorConfig?: IMonitorConfig;
+  search?: IQueryString;
+}
 
 interface ICompressedDisplayRouteParams {
-  version: string,
-  packedDisplay: string
-};
+  version: string;
+  packedDisplay: string;
+}
 
 interface IConfigurationDisplayRouteParams {
-  configuration: string,
-  displayName: string,
-};
+  configuration: string;
+  displayName: string;
+}
 
 interface IStopRouteParams {
-  stopId: string,
-  displayedRoutes?: string,
-  search?: string,
-};
+  stopId: string;
+  displayedRoutes?: string;
+  search?: string;
+}
 
-export type combinedConfigurationAndInjected = IConfigurationProps & WithTranslation
+export type combinedConfigurationAndInjected = IConfigurationProps &
+  WithTranslation;
 
 class App extends React.Component<combinedConfigurationAndInjected> {
   constructor(props: combinedConfigurationAndInjected) {
     super(props);
   }
+
   public render() {
-    const monitorConfig = this.props.monitorConfig;
+    const { monitorConfig } = this.props;
 
-    let helpPageUrlParamText: string = '';
-    let helpPageurlMultipleStopsText: string = '';
-    let helpPageUrlParamFindText: string = '';
-    let helpPageUrlParamFindAltText: string = '';
+    let helpPageUrlParamText = '';
+    let helpPageurlMultipleStopsText = '';
+    let helpPageUrlParamFindText = '';
+    let helpPageUrlParamFindAltText = '';
 
-    if(monitorConfig) {
-     // set texts for help page.
-      helpPageUrlParamText = monitorConfig.urlParamUsageText ? monitorConfig.urlParamUsageText : '';
-      helpPageurlMultipleStopsText = monitorConfig.urlMultipleStopsText ? monitorConfig.urlMultipleStopsText : '';
-      helpPageUrlParamFindText = monitorConfig.urlParamFindText ? monitorConfig.urlParamFindText : '';
-      helpPageUrlParamFindAltText = monitorConfig.urlParamFindAltText ? monitorConfig.urlParamFindAltText : '';
+    if (monitorConfig) {
+      // set texts for help page.
+      helpPageUrlParamText = monitorConfig.urlParamUsageText
+        ? monitorConfig.urlParamUsageText
+        : '';
+      helpPageurlMultipleStopsText = monitorConfig.urlMultipleStopsText
+        ? monitorConfig.urlMultipleStopsText
+        : '';
+      helpPageUrlParamFindText = monitorConfig.urlParamFindText
+        ? monitorConfig.urlParamFindText
+        : '';
+      helpPageUrlParamFindAltText = monitorConfig.urlParamFindAltText
+        ? monitorConfig.urlParamFindAltText
+        : '';
     }
 
     return (
-      <div
-        className={'App'}
-      >
+      <div className="App">
         <Switch>
           <Route
-            path={'/quickDisplay/:version?/:packedDisplay?'}
+            path="/quickDisplay/:version?/:packedDisplay?"
             component={QuickDisplay}
           />
           <Route
-           path={'/help/'}
-           component={({ match: { params: { }} }: RouteComponentProps<IMonitorConfig>) => (
-            <HelpPage urlParamUsageText={helpPageUrlParamText}
-                      urlMultipleStopsText={helpPageurlMultipleStopsText}
-                      urlParamFindText={helpPageUrlParamFindText}
-                      urlParamFindAltText={helpPageUrlParamFindAltText}
-             />
+            path="/help/"
+            component={({
+              match: {
+                params: {},
+              },
+            }: RouteComponentProps<IMonitorConfig>) => (
+              <HelpPage
+                urlParamUsageText={helpPageUrlParamText}
+                urlMultipleStopsText={helpPageurlMultipleStopsText}
+                urlParamFindText={helpPageUrlParamFindText}
+                urlParamFindAltText={helpPageUrlParamFindAltText}
+              />
             )}
           />
           <Route
-            path={'/urld/:version/:packedDisplay'}
-            component={({ match: { params: { version, packedDisplay }} }: RouteComponentProps<ICompressedDisplayRouteParams>) => {
-              return (
+            path="/urld/:version/:packedDisplay"
+            component={({
+              match: {
+                params: { version, packedDisplay },
+              },
+            }: RouteComponentProps<ICompressedDisplayRouteParams>) => (
               <>
                 <DisplayUrlCompression
                   version={decodeURIComponent(version)}
                   packedString={decodeURIComponent(packedDisplay)}
                 />
               </>
-            )}}
+            )}
           />
           <Route
-            path={'/configuration/:configuration/display/:display'}
-            component={({ match: { params: { configuration, displayName }}}: RouteComponentProps<IConfigurationDisplayRouteParams>) => (
+            path="/configuration/:configuration/display/:display"
+            component={({
+              match: {
+                params: { configuration, displayName },
+              },
+            }: RouteComponentProps<IConfigurationDisplayRouteParams>) => (
               <ConfigurationDisplay
                 configurationName={configuration}
                 displayName={displayName}
@@ -115,34 +135,32 @@ class App extends React.Component<combinedConfigurationAndInjected> {
             )}
           />
           <Route
-            path={'/stop/:stopId/:displayedRoutes?'}
-            component={({ match: { params: { stopId, displayedRoutes }} }: RouteComponentProps<IStopRouteParams>) => (
+            path="/stop/:stopId/:displayedRoutes?"
+            component={({
+              match: {
+                params: { stopId, displayedRoutes },
+              },
+            }: RouteComponentProps<IStopRouteParams>) => (
               <StopTimesView
-                stopIds={stopId.split(",")}
-                displayedRoutes={displayedRoutes ? Number(displayedRoutes) : undefined}
+                stopIds={stopId.split(',')}
+                displayedRoutes={
+                  displayedRoutes ? Number(displayedRoutes) : undefined
+                }
                 monitorConfig={monitorConfig}
                 urlTitle={this.props.search?.title}
               />
             )}
           />
-          <Route
-            path={'/configs/:configName?'}
-            component={ConfigurationList}
-          />
-          <Route
-            path={'/displayEditor/'}
-            component={DisplayEditor}
-          />
+          <Route path="/configs/:configName?" component={ConfigurationList} />
+          <Route path="/displayEditor/" component={DisplayEditor} />
           <Route>
-            <div id={'stop-search'}>
+            <div id="stop-search">
               <Titlebar>
                 <Logo monitorConfig={monitorConfig} />
-                <div id={"title-text"}>
-                  {this.props.t('titlebarTitle')}
-                </div>
+                <div id="title-text">{this.props.t('titlebarTitle')}</div>
                 <TitlebarTime />
               </Titlebar>
-              <Link to={'/quickDisplay'}>
+              <Link to="/quickDisplay">
                 {this.props.t('quickDisplayCreate')}
               </Link>
               {/* <Link to={'/configs/1'}>
@@ -155,6 +173,6 @@ class App extends React.Component<combinedConfigurationAndInjected> {
       </div>
     );
   }
-};
+}
 
 export default withTranslation('translations')(App);

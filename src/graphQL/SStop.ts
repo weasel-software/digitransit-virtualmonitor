@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import SNode, { SNodeFields } from 'src/graphQL/SNode';
 
 const SStop = new GraphQLObjectType({

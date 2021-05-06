@@ -3,15 +3,23 @@ import gql from 'graphql-tag';
 import { v4 as uuidv4 } from 'uuid';
 
 import schema, { OptionalId } from 'src/graphQL/schema';
-import { IConfiguration, IDisplay, IStop, IStopTimesView, IViewCarouselElement } from 'src/ui/ConfigurationList';
-import { ConfigurationFieldsFragment, DisplayFieldsFragment } from 'src/ui/ConfigurationRetriever';
+import {
+  IConfiguration,
+  IDisplay,
+  IStop,
+  IStopTimesView,
+  IViewCarouselElement,
+} from 'src/ui/ConfigurationList';
+import {
+  ConfigurationFieldsFragment,
+  DisplayFieldsFragment,
+} from 'src/ui/ConfigurationRetriever';
+
 @state({
   defaults: {
-    localConfigurations: [
-    ],
+    localConfigurations: [],
   },
 })
-
 class VirtualMonitorLocalState {
   // @resolve('Query.node')
   // node(_: any, { id }: { id: string }, context: Context) {
@@ -63,9 +71,9 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
+      data => {
         data.localConfigurations.push(newConfiguration);
-      }
+      },
     );
 
     return newConfiguration;
@@ -73,15 +81,14 @@ class VirtualMonitorLocalState {
 
   @mutation('addQuickDisplay')
   public addQuickDisplay({ display }: { display: IDisplay }, context: Context) {
-
     const nullifiedDisplay: any = {
       ...display,
       position: display.position || null,
-    }
+    };
 
     const newConfiguration: any = {
       __typename: 'Configuration',
-      displays: [ nullifiedDisplay ],
+      displays: [nullifiedDisplay],
       id: uuidv4(),
       name: 'QuickConfiguration',
       position: null,
@@ -96,16 +103,19 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
+      data => {
         data.localConfigurations.push(newConfiguration);
-      }
+      },
     );
 
     return display;
   }
 
   @mutation('removeStopFromStopTimesView')
-  public removeStopFromStopTimesView({ stopId }: { stopId: string }, context: Context) {
+  public removeStopFromStopTimesView(
+    { stopId }: { stopId: string },
+    context: Context,
+  ) {
     context.patchQuery(
       gql`
         ${ConfigurationFieldsFragment}
@@ -115,44 +125,55 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
+      data => {
         for (const conf of data.localConfigurations) {
           for (const display of conf.displays) {
             for (const viewCarouselElement of display.viewCarousel) {
-              if (viewCarouselElement.view.stops.some((stop: IStop) => stop.id === stopId)) {
-                viewCarouselElement.view.stops = viewCarouselElement.view.stops.filter((stop: IStop) => stop.id !== stopId);
+              if (
+                viewCarouselElement.view.stops.some(
+                  (stop: IStop) => stop.id === stopId,
+                )
+              ) {
+                viewCarouselElement.view.stops = viewCarouselElement.view.stops.filter(
+                  (stop: IStop) => stop.id !== stopId,
+                );
               }
             }
           }
         }
-      }
+      },
     );
-    return;
   }
 
   @mutation('addStopToStopTimesView')
-  public addStopToStopTimesView({ stopTimesViewId, stop }: { stopTimesViewId: string, stop: OptionalId<IStop> }, context: Context) {
+  public addStopToStopTimesView(
+    {
+      stopTimesViewId,
+      stop,
+    }: { stopTimesViewId: string; stop: OptionalId<IStop> },
+    context: Context,
+  ) {
     const stopWithId = {
       ...stop,
       id: uuidv4(),
     };
 
     const StopTimesViewFragment = gql`
-    fragment stopTimesViewFields on Node {
-      ... on StopTimesView {
-        id
-        title {
-          fi
-          en
-        }
-        type
-        stops {
+      fragment stopTimesViewFields on Node {
+        ... on StopTimesView {
           id
-          gtfsId
-          overrideStopName
+          title {
+            fi
+            en
+          }
+          type
+          stops {
+            id
+            gtfsId
+            overrideStopName
+          }
         }
       }
-    }
     `;
 
     context.patchQuery(
@@ -164,7 +185,7 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
+      data => {
         for (const conf of data.localConfigurations) {
           for (const display of conf.displays) {
             for (const viewCarouselElement of display.viewCarousel) {
@@ -174,19 +195,36 @@ class VirtualMonitorLocalState {
             }
           }
         }
-      }
+      },
     );
     return stopWithId;
   }
 
   @mutation('moveStop')
-  public moveStop({ stopTimesViewId, stopId, direction }: { stopTimesViewId: string, stopId: string, direction: 'up' | 'down' }, context: Context) {
-    const nudgeArrayElement = <T>(arr: ReadonlyArray<T>, element: T, nudgeDirection: 'up' | 'down') => {
+  public moveStop(
+    {
+      stopTimesViewId,
+      stopId,
+      direction,
+    }: { stopTimesViewId: string; stopId: string; direction: 'up' | 'down' },
+    context: Context,
+  ) {
+    const nudgeArrayElement = <T>(
+      arr: readonly T[],
+      element: T,
+      nudgeDirection: 'up' | 'down',
+    ) => {
       const foundIndex = arr.findIndex(e => e === element);
       if (foundIndex === -1) {
         return arr;
       }
-      const newIndex = Math.max(0, Math.min(arr.length - 1, foundIndex + (nudgeDirection === 'up' ? -1 : +1)));
+      const newIndex = Math.max(
+        0,
+        Math.min(
+          arr.length - 1,
+          foundIndex + (nudgeDirection === 'up' ? -1 : +1),
+        ),
+      );
       if (foundIndex === newIndex) {
         return arr;
       }
@@ -194,8 +232,8 @@ class VirtualMonitorLocalState {
       return [
         ...arrayWithoutElement.slice(0, newIndex),
         element,
-        ...arrayWithoutElement.slice(newIndex)
-      ]
+        ...arrayWithoutElement.slice(newIndex),
+      ];
     };
 
     context.patchQuery(
@@ -207,28 +245,41 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
-        for (const conf of (data.localConfigurations as ReadonlyArray<IConfiguration>)) {
+      data => {
+        for (const conf of data.localConfigurations as readonly IConfiguration[]) {
           for (const display of conf.displays) {
             for (const viewCarouselElement of display.viewCarousel) {
-              if ((viewCarouselElement.view.type === 'stopTimes') && (viewCarouselElement.view.id === stopTimesViewId) && ((viewCarouselElement.view as IStopTimesView).stops)) {
-                const stops = (viewCarouselElement.view as IStopTimesView).stops;
+              if (
+                viewCarouselElement.view.type === 'stopTimes' &&
+                viewCarouselElement.view.id === stopTimesViewId &&
+                viewCarouselElement.view.stops
+              ) {
+                const { stops } = viewCarouselElement.view;
                 const newStops = nudgeArrayElement(
                   stops,
                   stops.find(e => e.id === stopId),
-                  direction
+                  direction,
                 ) as IStop[];
-                ((viewCarouselElement.view as IStopTimesView).stops as IStop[]) = newStops;
+                (viewCarouselElement.view.stops as IStop[]) = newStops;
               }
             }
           }
         }
-      }
-    )
+      },
+    );
   }
 
   @mutation('addViewCarouselElement')
-  public addViewCarouselElement({ displayId, viewCarouselElement }: { displayId: string, viewCarouselElement: OptionalId<IViewCarouselElement> }, context: Context) {
+  public addViewCarouselElement(
+    {
+      displayId,
+      viewCarouselElement,
+    }: {
+      displayId: string;
+      viewCarouselElement: OptionalId<IViewCarouselElement>;
+    },
+    context: Context,
+  ) {
     const defaultViewCarouselElement = {
       __typename: 'ViewWithDisplaySeconds',
       displaySeconds: 2,
@@ -264,21 +315,29 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
-        for (const conf of (data.localConfigurations as ReadonlyArray<IConfiguration>)) {
+      data => {
+        for (const conf of data.localConfigurations as readonly IConfiguration[]) {
           for (const display of conf.displays) {
             if (display.id === displayId) {
-              (display.viewCarousel as IViewCarouselElement[]).push(viewCarouselElementToAdd)
+              (display.viewCarousel as IViewCarouselElement[]).push(
+                viewCarouselElementToAdd,
+              );
             }
           }
         }
-      }
+      },
     );
     return viewCarouselElementToAdd;
   }
 
   @mutation('setOverrideStopName')
-  public setOverrideStopName({ stopId, overrideStopName }: { stopId: string, overrideStopName: string | null }, context: Context) {
+  public setOverrideStopName(
+    {
+      stopId,
+      overrideStopName,
+    }: { stopId: string; overrideStopName: string | null },
+    context: Context,
+  ) {
     context.patchQuery(
       gql`
         ${ConfigurationFieldsFragment}
@@ -288,26 +347,32 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
-        for (const conf of (data.localConfigurations as ReadonlyArray<IConfiguration>)) {
+      data => {
+        for (const conf of data.localConfigurations as readonly IConfiguration[]) {
           for (const display of conf.displays) {
             for (const viewCarouselElement of display.viewCarousel) {
               if (viewCarouselElement.view.type === 'stopTimes') {
-                for (const stop of (viewCarouselElement.view as IStopTimesView).stops) {
+                for (const stop of viewCarouselElement.view.stops) {
                   if (stop.id === stopId) {
-                    (stop.overrideStopName as string | undefined) = overrideStopName ? overrideStopName : undefined;
+                    stop.overrideStopName = overrideStopName || undefined;
                   }
                 }
               }
             }
           }
         }
-      }
+      },
     );
   }
 
   @mutation('setViewCarouselElementDisplaySeconds')
-  public setViewCarouselElementDisplaySeconds({ viewCarouselElementId, displaySeconds }: { viewCarouselElementId: string, displaySeconds: number }, context: Context) {
+  public setViewCarouselElementDisplaySeconds(
+    {
+      viewCarouselElementId,
+      displaySeconds,
+    }: { viewCarouselElementId: string; displaySeconds: number },
+    context: Context,
+  ) {
     context.patchQuery(
       gql`
         ${ConfigurationFieldsFragment}
@@ -317,22 +382,25 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
-        for (const conf of (data.localConfigurations as ReadonlyArray<IConfiguration>)) {
+      data => {
+        for (const conf of data.localConfigurations as readonly IConfiguration[]) {
           for (const display of conf.displays) {
             for (const viewCarouselElement of display.viewCarousel) {
               if (viewCarouselElement.id === viewCarouselElementId) {
-                (viewCarouselElement.displaySeconds as number) = displaySeconds;
+                viewCarouselElement.displaySeconds = displaySeconds;
               }
             }
           }
         }
-      }
+      },
     );
   }
 
   @mutation('setViewTitle')
-  public setViewTitle({ viewId, title }: { viewId: string, title: string }, context: Context) {
+  public setViewTitle(
+    { viewId, title }: { viewId: string; title: string },
+    context: Context,
+  ) {
     context.patchQuery(
       gql`
         ${ConfigurationFieldsFragment}
@@ -342,22 +410,28 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
-        for (const conf of (data.localConfigurations as ReadonlyArray<IConfiguration>)) {
+      data => {
+        for (const conf of data.localConfigurations as readonly IConfiguration[]) {
           for (const display of conf.displays) {
             for (const viewCarouselElement of display.viewCarousel) {
-              if ((viewCarouselElement.view.id === viewId) && viewCarouselElement.view.title) {
-                (viewCarouselElement.view.title.fi as string) = title;
+              if (
+                viewCarouselElement.view.id === viewId &&
+                viewCarouselElement.view.title
+              ) {
+                viewCarouselElement.view.title.fi = title;
               }
             }
           }
         }
-      }
+      },
     );
   }
 
   @mutation('removeViewCarouselElement')
-  public removeViewCarouselElement({ viewCarouselElementId }: { viewCarouselElementId: string }, context: Context) {
+  public removeViewCarouselElement(
+    { viewCarouselElementId }: { viewCarouselElementId: string },
+    context: Context,
+  ) {
     context.patchQuery(
       gql`
         ${ConfigurationFieldsFragment}
@@ -367,17 +441,21 @@ class VirtualMonitorLocalState {
           }
         }
       `,
-      (data) => {
-        for (const conf of (data.localConfigurations as ReadonlyArray<IConfiguration>)) {
+      data => {
+        for (const conf of data.localConfigurations as readonly IConfiguration[]) {
           for (const display of conf.displays) {
-            if (display.viewCarousel.find(vce => vce.id === viewCarouselElementId)) {
-              (display.viewCarousel as IViewCarouselElement[]) = display.viewCarousel.filter(vce => vce.id !== viewCarouselElementId)
+            if (
+              display.viewCarousel.find(vce => vce.id === viewCarouselElementId)
+            ) {
+              (display.viewCarousel as IViewCarouselElement[]) = display.viewCarousel.filter(
+                vce => vce.id !== viewCarouselElementId,
+              );
             }
           }
         }
-      }
+      },
     );
   }
-};
+}
 
 export default VirtualMonitorLocalState;

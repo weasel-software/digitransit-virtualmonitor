@@ -6,7 +6,12 @@ const reactI18next = require('react-i18next');
 /* tslint:disable */
 module.exports = {
   // this mock makes sure any components using the translate HoC receive the t function as a prop
-  translate: () => Component => props => <Component t={(template, props) => `${template} - ${JSON.stringify(props)}`} {...props} />,
+  translate: () => Component => props => (
+    <Component
+      t={(template, props) => `${template} - ${JSON.stringify(props)}`}
+      {...props}
+    />
+  ),
   Trans: ({ children }) => children,
   I18n: ({ children }) => children(k => k, { i18n: {} }),
 
@@ -18,5 +23,5 @@ module.exports = {
   setDefaults: reactI18next.setDefaults,
   getDefaults: reactI18next.getDefaults,
   setI18n: reactI18next.setI18n,
-  getI18n: reactI18next.getI18n
+  getI18n: reactI18next.getI18n,
 };
