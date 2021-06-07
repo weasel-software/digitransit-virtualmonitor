@@ -1,4 +1,6 @@
 import {useEffect, useState} from "react";
+import { WithTranslation, withTranslation } from "react-i18next";
+//import { some } from 'lodash';
 import * as React from 'react';
 import StopViewTitleEditor from "./StopViewTitleEditor";
 import StopListContainer from './StopListContainer';
@@ -18,13 +20,29 @@ const getGTFSId = ( id ) => {
 };
 
 const GET_STOP = gql`
-  query GetStopInfos($stopIds: [String]) {
-    stopInfos: stops(ids: $stopIds) {
+  query stopQuery($ids: [String]) {
+    stop: stops(ids: $ids) {
+      id
       name
       code
       desc
       gtfsId
       platformCode
+    }
+  }
+`;
+const GET_STATION = gql`
+  query stationQuery($ids: [String]) {
+    station: stations(ids: $ids) {
+      id
+      name
+      code
+      desc
+      gtfsId
+      platformCode
+      stops {
+        desc
+      }
     }
   }
 `;
@@ -37,7 +55,7 @@ interface IHelpPageProps {
 }
 
 
-const HelpPage :React.FC<IHelpPageProps> = (props) =>  {
+const HelpPage :React.FC<IHelpPageProps & WithTranslation> = (props) =>  {
   if(!props) {
     return (<p> ERROR: OHJEITA EI LÖYTYNYT</p>)
   }
@@ -45,14 +63,30 @@ const HelpPage :React.FC<IHelpPageProps> = (props) =>  {
   const [stops, setStops] =  useState([]);
   const [
     getStop,
-    { loading, data }
+    stopState
   ] = useLazyQuery(GET_STOP);
+  
+  const [
+    getStation,
+    stationState
+  ] = useLazyQuery(GET_STATION);
 
   const lang = 'fi'; // en, fi or sv
 
   const onSelect = (selected) => {
     const properties = selected.properties;
-    getStop({ variables: {stopIds: getGTFSId(properties.id)}})
+    switch (properties.layer) {
+      case 'stop':
+        getStop({ variables: {ids: getGTFSId(properties.id)}})
+        break;
+      case 'station':
+        getStation({ variables: {ids: getGTFSId(properties.id)}})
+        break;
+      default:
+        console.log('unknown', selected);
+        break;
+    }
+    
   };
 
   const onClear = () => {
@@ -61,10 +95,22 @@ const HelpPage :React.FC<IHelpPageProps> = (props) =>  {
   };
 
   useEffect(() => {
-    if(data?.stopInfos) {
-      setStops(stops.concat(data.stopInfos.filter(stop => stop !== null)))
+    if(stopState.data?.stop) {
+      setStops(stops.concat(stopState.data.stop.filter(stop => stop && !stops.some(el => el.id === stop.id))))
     }
-  }, [data]);
+  }, [stopState.data]);
+
+  useEffect(() => {
+    if(stationState.data?.station) {
+      setStops(stops.concat(stationState.data.station.filter(s => s && !stops.some(el => el.id === s.id)).map(station => {
+        return {
+          ...station,
+          code: props.t('station'),
+          desc: station.stops[0].desc,
+        }
+      })))
+    }
+  }, [stationState.data])
 
   const onDelete = (stop: string) => {
     setStops(stops.filter(s => s.gtfsId !== stop))
@@ -108,4 +154,4 @@ const HelpPage :React.FC<IHelpPageProps> = (props) =>  {
     </>
   )
 }
-export default HelpPage;
+export default withTranslation('translations')(HelpPage);
