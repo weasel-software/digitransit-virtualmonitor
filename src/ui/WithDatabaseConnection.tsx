@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import monitorAPI from '../api';
 import { ISides, ITitle } from '../util/Interfaces';
-import CarouselContainer from './CarouselContainer';
+import MonitorDataContainer from './MonitorDataContainer';
 
 interface Iv {
   columns: ISides;
@@ -43,7 +43,7 @@ const WithDatabaseConnection: FC<IProps> = ({ location }) => {
   if ((!fetched && !location?.state?.view?.cards) || !monitor?.contenthash) {
     return null;
   }
-  return <CarouselContainer views={monitor.cards} />;
+  return <MonitorDataContainer views={monitor.cards} />;
 };
 
 export default WithDatabaseConnection;

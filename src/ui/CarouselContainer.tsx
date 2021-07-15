@@ -6,6 +6,8 @@ import { EpochMilliseconds } from '../time';
 
 interface IProps {
   views: Array<IView>;
+  stopDepartures?: Array<any>;
+  stationDepartures?: Array<any>;
   noPolling?: boolean;
   time?: EpochMilliseconds;
   isPreview?: boolean;
@@ -14,6 +16,8 @@ interface IProps {
 
 const CarouselContainer: FC<IProps> = ({
   views,
+  stopDepartures,
+  stationDepartures,
   noPolling,
   time,
   isPreview = false,
@@ -28,9 +32,12 @@ const CarouselContainer: FC<IProps> = ({
     return () => clearTimeout(id);
   }, [current]);
   const config = getConfig();
+  //console.log([...stopDepartures[current], ...stationDepartures[current]])
+  //console.log(...stationDepartures[current][0])
   return (
     <Monitor
       view={views[current]}
+      departuress={[...stopDepartures[current][0], ...stationDepartures[current][0]]}
       index={current}
       config={config}
       noPolling={noPolling}
