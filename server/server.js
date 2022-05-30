@@ -45,7 +45,7 @@ const port = normalizePort(process.env.PORT || '3001');
 const config = {
   agencies: [
     {
-      url: 'https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip',
+      url: 'http://data.foli.fi/gtfs/gtfs.zip',
       exclude: [
         'attributions',
         'calendar_dates',

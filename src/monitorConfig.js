@@ -116,4 +116,36 @@ export default {
     allowLogin: false,
     useTilde: false,
   },
+  turku: {
+    colors: {
+      primary: '#cf9c1c',
+      monitorBackground: '#000000',
+    },
+    feedIds: ['FOLI'],
+    fonts: {
+      monitor: {
+        name: 'Roboto',
+        weight: '700',
+      },
+    },
+    modeIcons: {
+      colors: {
+        'mode-bus': '#8f781a',
+        'mode-rail': '#0E7F3C',
+        'mode-tram': '#DA2128',
+        'mode-hybrid-bus-tram': '#1A4A8F,#DA2128',
+      },
+      postfix: '-waltti',
+      setName: 'digitransit',
+    },
+    monitorFont: 'Lato',
+    monitorFontWeight: '700',
+    name: 'turku',
+    uri: 'https://api.digitransit.fi/routing/v1/routers/waltti/index/graphql',
+    showMinutes: '15',
+    alertOrientation: 'horizontal', // Possible values are 'vertical', 'horizontal' and 'static'
+    breadCrumbsStartPage: 'front', // Possible values are 'front' and 'site'
+    allowLogin: false,
+    useTilde: false,
+  },
 };
